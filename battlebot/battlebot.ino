@@ -11,7 +11,7 @@ const int ENB = 33; // Right motor PWM
 const int IN3 = 27;
 const int IN4 = 14;
 
-const int ESC_PIN = 13;
+const int ESC_PIN = 13; // Brushless ESC pin
 
 // LEDC PWM channels
 #define CH_LEFT  0
@@ -41,7 +41,7 @@ void setup() {
   // ESC setup
   esc.setPeriodHertz(50);
   esc.attach(ESC_PIN, 1000, 2000);
-  esc.writeMicroseconds(1000);
+  esc.writeMicroseconds(1000); // Start with idle signal
 
   // PS4 controller
   PS4.begin("78:2b:46:d6:02:0d");
@@ -52,7 +52,6 @@ void loop() {
   if (PS4.isConnected()) {
     int leftY = PS4.LStickY();
     int rightY = PS4.RStickY();
-    int r2 = PS4.R2Value();
 
     // Apply deadzone
     leftY = (abs(leftY) < DEADZONE) ? 0 : leftY;
@@ -62,13 +61,15 @@ void loop() {
     int rightSpeed = map(rightY, -128, 127, 255, -255);
 
     controlMotor(CH_LEFT, IN1, IN2, leftSpeed);
-    // Serial.println(leftSpeed);
     controlMotor(CH_RIGHT, IN3, IN4, rightSpeed);
-    // Serial.println(rightSpeed);
 
-    int escPWM = (map(r2, 0, 255, 1000, 2000)) -1000;
-    esc.writeMicroseconds(escPWM);
-    // Serial.println(escPWM);
+    // If left bumper (L1) is pressed, set ESC to half power
+    if (PS4.L1()) {
+      esc.writeMicroseconds(2000); // Set ESC to half power
+      Serial.println("ESC set to half power");
+    } else {
+      esc.writeMicroseconds(1000); // Set ESC to idle
+    }
   }
 }
 
