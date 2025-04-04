@@ -44,7 +44,7 @@ void setup() {
   esc.writeMicroseconds(1000);
 
   // PS4 controller
-  PS4.begin("xx:xx:xx:xx:xx:xx");  // Replace with your controller's MAC
+  PS4.begin("78:2b:46:d6:02:0d");
   Serial.println("Waiting for PS4 controller...");
 }
 
@@ -62,10 +62,13 @@ void loop() {
     int rightSpeed = map(rightY, -128, 127, 255, -255);
 
     controlMotor(CH_LEFT, IN1, IN2, leftSpeed);
+    // Serial.println(leftSpeed);
     controlMotor(CH_RIGHT, IN3, IN4, rightSpeed);
+    // Serial.println(rightSpeed);
 
-    int escPWM = map(r2, 0, 255, 1000, 2000);
+    int escPWM = (map(r2, 0, 255, 1000, 2000)) -1000;
     esc.writeMicroseconds(escPWM);
+    // Serial.println(escPWM);
   }
 }
 
