@@ -2,14 +2,22 @@
 #include <ESP32Servo.h>
 #include <Arduino.h>
 
-// Motor control pins
+// MOSTLY WORKING CONFIGURATION
+// // Motor control pins
 const int ENA = 32; // Left motor PWM
+// const int IN1 = 25;
+// const int IN2 = 26;
+
+const int ENB = 33; // Right motor PWM
+// const int IN3 = 27;
+// const int IN4 = 14;
+
+// Motor control pins
 const int IN1 = 25;
 const int IN2 = 26;
 
-const int ENB = 33; // Right motor PWM
-const int IN3 = 27;
-const int IN4 = 14;
+const int IN3 = 14;
+const int IN4 = 27;
 
 const int ESC_PIN = 13; // Brushless ESC pin
 
@@ -44,12 +52,13 @@ void setup() {
   esc.writeMicroseconds(1000); // Start with idle signal
 
   // PS4 controller
-  PS4.begin("78:2b:46:d6:02:0d");
+  PS4.begin("5c:93:a2:38:32:0e");
   Serial.println("Waiting for PS4 controller...");
 }
 
 void loop() {
   if (PS4.isConnected()) {
+    Serial.println("Working");
     int leftY = PS4.LStickY();
     int rightY = PS4.RStickY();
 
